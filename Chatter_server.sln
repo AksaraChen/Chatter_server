@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.489
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Chatter_server", "Chatter_server\Chatter_server.pyproj", "{CCBA514D-0F69-4B4E-9A14-E8A321756F26}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CCBA514D-0F69-4B4E-9A14-E8A321756F26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCBA514D-0F69-4B4E-9A14-E8A321756F26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FC4D1BAA-B63E-4CC2-953B-100E2E3C9D41}
+	EndGlobalSection
+EndGlobal

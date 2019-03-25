@@ -3,7 +3,7 @@ import socket
 import sys
 
 HOST=' '
-PORT=50008
+PORT=50000
 threads=[]
 sc={}
 ID={}
@@ -16,40 +16,54 @@ global s,user_num
 #            if not data:
 #                break
 #            ms=addr[0]+':'+data
-
-
-def connect(cli):
-    while True:
-        conn,address=cli.accept()#在收到連線要求後准許連線，conn為client產生出的socket物件，address為客戶端地址
-        print(address+"已成功連線\n")
-        t=threading.Thread(target=receive,arg_str=(conn,address))
-        t.start()
-        threads.append(t)
-        sc[addr]=conn
-        
-def recieve_send(conn_1,mes):                         #conn_1為寄出方，mes為傳遞之訊息
+def recieve_send(conn_1,address_1):                         #conn_1為寄出方
     while True:
         try:
             data=conn_1.recv(1024)                    #收到conn_1寄出的訊息
         except:
             print("Send Error")
-        for key in sc:                                #由於最多只會有兩個client，因此使用for loop將所有的client都發一遍
-            if key==conn_1.getsockname():             #跳過自己
-                continue
-            sc[key].send(conn_1.getsockname()+mes)    #發出訊息
+        if data==str.encode("ID_register"):
+            register(conn_1,address_1)
+            continue
+        temp=0
+        for key in ID:
+            temp+=1
+        if temp==1:
+            sc[address_1].send(str.encode("現在只有一個用戶"))
+        else:
+            for key in sc:                                #由於最多只會有兩個client，因此使用for loop將所有的client都發一遍
+                if key==address_1:                        #跳過自己
+                    continue
+                sc[key].send(data)
 
-def register(client_addr,id):
+def connect(cli):
     while True:
+        conn,address=cli.accept()#在收到連線要求後准許連線，conn為client產生出的socket物件，address為客戶端地址
+        t=threading.Thread(target=recieve_send,args=(conn,address))
+        t.start()
+        threads.append(t)
+        sc[address]=conn
+        
+   #發出訊息
+
+def register(conn,address):
         try:
-            ID[client_addr]=id
+            data=conn.recv(1024)                    #收到conn_1寄出的訊息
+        except:
+            print("recivev ID Error")
+            exit()
+        try:
+            ID[address]=data
         except:
             print("Register Error")
+            exit()
 
 def search(client_addr):
     try:
         return ID[client_addr]
     except:
         print("can't find user")
+        exit()
 
 def main():
     global s,user_num
@@ -62,16 +76,16 @@ def main():
     while True:
         temp=input("欲搜尋用戶ID請按1，欲離開請按0：")
         if temp=='1':
-            if ID=={}:
-                print("現在無任何已連線用戶\n2")
             for key in ID:
-                print(key+":"+ID[key]+"\n")
+                print(key[0]+str(key[1])+":"+str(ID[key])+"\n")
                 temp_2+=1
-            user_num=temp_2
+            if temp_2==0:
+                print("現在無任何已連線用戶\n")
         elif temp=='0':
-            sys.exit(0)
+            break
         else:
             print("錯誤的輸入，請重新輸入\n")
+    sys.exit(0)
 
 if __name__=='__main__':
     main()

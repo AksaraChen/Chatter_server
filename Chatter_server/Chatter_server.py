@@ -20,11 +20,27 @@ def recieve_send(conn_1,address_1):                         #conn_1為寄出方
     while True:
         try:
             data=conn_1.recv(1024)                    #收到conn_1寄出的訊息
+            if data==str.encode("ID_register"):
+                register(conn_1,address_1)
+                continue
+            elif data==str.encode("\myip"):
+                ask_for_ip(address_1,address_1)
+                continue
+            elif data==str.encode("\herip"):
+                temp=0
+                for key in ID:
+                    temp+=1
+                if temp==1:
+                    ask_for_ip()
+                else:
+                    for key in sc:                                
+                        if key==address_1:                        
+                            continue
+                        ask_for_ip(address_1,key)
+                continue
         except:
-            print("Send Error")
-        if data==str.encode("ID_register"):
-            register(conn_1,address_1)
-            continue
+            print("\nLost connection")
+            break
         temp=0
         for key in ID:
             temp+=1
@@ -36,6 +52,8 @@ def recieve_send(conn_1,address_1):                         #conn_1為寄出方
                     continue
                 sc[key].send(data)
 
+def ask_for_ip(addr_1,addr_2):
+    sc[addr_1].send(str.encode(addr_2[0]+str(addr_2[1])+":"+str(ID[addr_2])+"\n"))
 def connect(cli):
     while True:
         conn,address=cli.accept()#在收到連線要求後准許連線，conn為client產生出的socket物件，address為客戶端地址
@@ -50,12 +68,12 @@ def register(conn,address):
         try:
             data=conn.recv(1024)                    #收到conn_1寄出的訊息
         except:
-            print("recivev ID Error")
+            print("\nrecivev ID Error")
             exit()
         try:
             ID[address]=data
         except:
-            print("Register Error")
+            print("\nRegister Error")
             exit()
 
 def search(client_addr):
